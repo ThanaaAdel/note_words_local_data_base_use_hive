@@ -6,7 +6,7 @@ import 'package:note_words_local_data_base_use_hive/model/words_model.dart';
 
 class ReadDataCubit extends Cubit<ReadDataCubitStates> {
   ReadDataCubit() : super(ReadDataCubitInitialState());
-  static get(context) => BlocProvider.of(context);
+  static ReadDataCubit get(context) => BlocProvider.of(context);
   final Box _box = Hive.box(HiveConstants.hiveBoxName);
   LanguageFilter languageFilter = LanguageFilter.allWords;
   SortingBy sortingBy = SortingBy.time;
@@ -18,6 +18,13 @@ class ReadDataCubit extends Cubit<ReadDataCubitStates> {
           List.from(_box.get(HiveConstants.hiveList, defaultValue: [])).cast<WordModel>();
       _removeUnWantedWords(wordsToReturn);
       _applySorting(wordsToReturn);
+      for(var i = 0; i < wordsToReturn.length ; i++ ){
+        print("============================================");
+        print(wordsToReturn[i].text);
+        print(wordsToReturn[i].indexWord);
+        print(wordsToReturn[i].isArabic);
+        print(wordsToReturn[i].colorCode);
+      }
       emit(ReadDataCubitSuccessState(words: wordsToReturn));
     } catch (error) {
       emit(ReadDataCubitFailedState(

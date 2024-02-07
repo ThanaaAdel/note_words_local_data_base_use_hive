@@ -8,7 +8,8 @@ import 'package:note_words_local_data_base_use_hive/model/words_model.dart';
 
 class WriteDataCubit extends Cubit<WriteDataCubitStates> {
   WriteDataCubit() : super(WriteDataCubitInitialState());
-  WriteDataCubit get(context) => BlocProvider.of(context);
+ static WriteDataCubit get(context) => BlocProvider.of(context);
+
   final Box box = Hive.box(HiveConstants.hiveBoxName);
   String text = '';
   int colorCode = 0xff4A47A3;
@@ -47,16 +48,23 @@ _tryAndCatchBlock(() {
   }
   void updateColorCode(int colorCode) {
     this.colorCode = colorCode;
+    emit(WriteDataCubitInitialState());
   }
   void updateIsArabic(bool isArabic) {
     this.isArabic = isArabic;
+    print("the bool arabic ${isArabic}");
+    emit(WriteDataCubitInitialState());
   }
   void addNewWord(){
     emit(WriteDataCubitLoadingState());
     _tryAndCatchBlock(() {
+
       List<WordModel> words = _getWordsFromDatabase();
     words.add(WordModel(indexWord: words.length, colorCode: colorCode, isArabic: isArabic, text: text));
-    box.put(HiveConstants.hiveList, words); },
+      print("success in getword ${words}");
+
+    box.put(HiveConstants.hiveList, words);
+    },
         "We Have Problems when add word , please try again");
   }
   void deleteWord(int indexDatabase){
