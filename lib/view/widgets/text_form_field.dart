@@ -27,7 +27,9 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
           cursorColor: ColorsManager.whiteColor,
           style: const TextStyle(color: ColorsManager.whiteColor),
           decoration: decorationFromTextField(),
-          onChanged: (value) => WriteDataCubit().updateText(widget.text),
+          onChanged: (value){
+            WriteDataCubit.get(context).updateText(value);
+          },
           validator: (value) {
           return  _validator(
               value!,
@@ -38,7 +40,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
   }
 
   String? _validator(String value, bool isArabic) {
-    if (value == null || value.trim().isEmpty) {
+    if (value.trim().isEmpty) {
       return "This field must not be empty";
     }
 

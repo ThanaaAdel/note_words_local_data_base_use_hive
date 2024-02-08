@@ -45,6 +45,8 @@ _tryAndCatchBlock(() {
   }
   void updateText(String text) {
     this.text = text;
+    emit(WriteDataCubitInitialState());
+
   }
   void updateColorCode(int colorCode) {
     this.colorCode = colorCode;
@@ -52,40 +54,28 @@ _tryAndCatchBlock(() {
   }
   void updateIsArabic(bool isArabic) {
     this.isArabic = isArabic;
-    print("the bool arabic ${isArabic}");
     emit(WriteDataCubitInitialState());
   }
-  void addNewWord(){
-    emit(WriteDataCubitLoadingState());
-    _tryAndCatchBlock(() {
-
-      List<WordModel> words = _getWordsFromDatabase();
-    words.add(WordModel(indexWord: words.length, colorCode: colorCode, isArabic: isArabic, text: text));
-      print("success in getword ${words}");
-
-    box.put(HiveConstants.hiveList, words);
-    },
-        "We Have Problems when add word , please try again");
-  }
-  void deleteWord(int indexDatabase){
-    emit(WriteDataCubitLoadingState());
+  void addWord() {
     _tryAndCatchBlock(() {
       List<WordModel> words = _getWordsFromDatabase();
-      words.removeAt(indexDatabase);
-      for(int i = 0 ; i < words.length ; i++ ){
-        words[i] = words[i].decrementIndexInDataBase();
-      }
+      words.add(WordModel(indexWord: words.length, text: text, isArabic: isArabic, colorCode: colorCode));
       box.put(HiveConstants.hiveList, words);
-    }, "We Have Problems when delete word , please try again");
-    }
-  void _tryAndCatchBlock(VoidCallback methodToExecute,String message ){
+    }, "We have problems when we add a word. Please try again.");
+  }
+
+
+
+  Future<void> _tryAndCatchBlock(VoidCallback methodToExcute, String message) async {
     emit(WriteDataCubitLoadingState());
-    try{
-      methodToExecute;
+    try {
+      methodToExcute.call();
       emit(WriteDataCubitSuccessState());
-    }catch(error){
+    } catch (error) {
       emit(WriteDataCubitFailedState(messageError: message));
     }
   }
-  _getWordsFromDatabase()=>List.from(box.get(HiveConstants.hiveList,defaultValue: [])).cast<WordModel>();
+
+  List<WordModel> _getWordsFromDatabase()=>List.from(box.get(HiveConstants.hiveList,defaultValue: []));
+
 }

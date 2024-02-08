@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
-import 'package:note_words_local_data_base_use_hive/controller/read_data_cubilt/read_data_cubit_states.dart';
+import 'package:note_words_local_data_base_use_hive/controller/read_data_cubit/read_data_cubit_states.dart';
 import 'package:note_words_local_data_base_use_hive/hive_constants/hive_constants.dart';
 import 'package:note_words_local_data_base_use_hive/model/words_model.dart';
 
@@ -16,15 +16,8 @@ class ReadDataCubit extends Cubit<ReadDataCubitStates> {
     try {
       List<WordModel> wordsToReturn =
           List.from(_box.get(HiveConstants.hiveList, defaultValue: [])).cast<WordModel>();
-      _removeUnWantedWords(wordsToReturn);
+      _removeUnwantedWords(wordsToReturn);
       _applySorting(wordsToReturn);
-      for(var i = 0; i < wordsToReturn.length ; i++ ){
-        print("============================================");
-        print(wordsToReturn[i].text);
-        print(wordsToReturn[i].indexWord);
-        print(wordsToReturn[i].isArabic);
-        print(wordsToReturn[i].colorCode);
-      }
       emit(ReadDataCubitSuccessState(words: wordsToReturn));
     } catch (error) {
       emit(ReadDataCubitFailedState(
@@ -32,15 +25,12 @@ class ReadDataCubit extends Cubit<ReadDataCubitStates> {
     }
   }
 
-  void _removeUnWantedWords(List<WordModel> wordsToReturn) {
-    if (languageFilter == LanguageFilter.allWords) {
-      return;
+  void _removeUnwantedWords(List<WordModel>wordsToReturn){
+    if(languageFilter==LanguageFilter.allWords){
+      return ;
     }
-    for (int i = 0; i < wordsToReturn.length; i++) {
-      if ((languageFilter == LanguageFilter.arabicOnly &&
-              wordsToReturn[i].isArabic == false) ||
-          (languageFilter == LanguageFilter.englishOnly &&
-              wordsToReturn[i].isArabic == true)) {
+    for (var i = 0; i < wordsToReturn.length; i++) {
+      if(  (languageFilter==LanguageFilter.arabicOnly && wordsToReturn[i].isArabic==false  ) || (languageFilter==LanguageFilter.englishOnly && wordsToReturn[i].isArabic==true)  ){
         wordsToReturn.removeAt(i);
         i--;
       }

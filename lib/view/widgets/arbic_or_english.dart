@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:note_words_local_data_base_use_hive/view/styles/color_manager.dart';
-
 import '../../controller/write_data_cubit/write_data_cubit.dart';
 
 class ArabicOrEnglishWidget extends StatelessWidget {
