@@ -3,6 +3,7 @@ import 'package:note_words_local_data_base_use_hive/view/styles/color_manager.da
 import 'package:note_words_local_data_base_use_hive/view/widgets/show_dialog_widget.dart';
 import '../widgets/filter_dailog_button.dart';
 import '../widgets/language_filter_widget.dart';
+import '../widgets/words_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,13 +25,19 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       appBar: AppBar(title: const Text("Home")),
-      body:   const Padding(
-        padding: EdgeInsets.all(15),
-        child: Row(children: [
-          LanguageFilterWidget(),
-          Spacer(),
-          FilterDialogButton(),
-        ]),
+      body:   const Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(15),
+            child: Row(children: [
+              LanguageFilterWidget(),
+              Spacer(),
+              FilterDialogButton(),
+            ]),
+
+          ),
+          Expanded(child: WordsWidget()),
+        ],
       ),
     );
   }

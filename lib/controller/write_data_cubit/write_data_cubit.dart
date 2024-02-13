@@ -14,11 +14,32 @@ class WriteDataCubit extends Cubit<WriteDataCubitStates> {
   String text = '';
   int colorCode = 0xff4A47A3;
   bool isArabic = true;
+  void deleteWord(int indexAtDatabase){
+    _tryAndCatchBlock((){
+      List<WordModel>words=_getWordsFromDatabase();
+      words.removeAt(indexAtDatabase);
+      for (var i = indexAtDatabase; i < words.length; i++) {
+        words[i]=words[i].decrementIndexInDataBase();
+      }
+      box.put(HiveConstants.hiveList, words);
+    },
+      "We Have problems when we Delete word,Please try again",
+    );
+
+  }
+  void addWord() {
+    _tryAndCatchBlock(() {
+      List<WordModel> words = _getWordsFromDatabase();
+      words.add(WordModel(indexWord: words.length, text: text, isArabic: isArabic, colorCode: colorCode));
+      box.put(HiveConstants.hiveList, words);
+    }, "We have problems when we add a word. Please try again.");
+  }
   void addSimilarWord(int indexInDatabase){
     _tryAndCatchBlock(() {
       List<WordModel> words = _getWordsFromDatabase();
       words[indexInDatabase] = words[indexInDatabase].addSimilarWord(text, isArabic);
       box.put(HiveConstants.hiveList, words);
+print(words.length);
     }, "We Have Problems when add similar word , please try again");
   }
   void addExample(int indexInDatabase){
@@ -26,6 +47,8 @@ class WriteDataCubit extends Cubit<WriteDataCubitStates> {
       List<WordModel> words = _getWordsFromDatabase();
       words[indexInDatabase] = words[indexInDatabase].addNewExample(text, isArabic);
       box.put(HiveConstants.hiveList, words);
+      print( words[indexInDatabase]);
+
     }, "We Have Problems when add Example , please try again");
   }
   void deleteExample(int indexInDatabase, int indexExample,bool isArabicExample){
@@ -48,6 +71,7 @@ _tryAndCatchBlock(() {
     emit(WriteDataCubitInitialState());
 
   }
+
   void updateColorCode(int colorCode) {
     this.colorCode = colorCode;
     emit(WriteDataCubitInitialState());
@@ -56,13 +80,7 @@ _tryAndCatchBlock(() {
     this.isArabic = isArabic;
     emit(WriteDataCubitInitialState());
   }
-  void addWord() {
-    _tryAndCatchBlock(() {
-      List<WordModel> words = _getWordsFromDatabase();
-      words.add(WordModel(indexWord: words.length, text: text, isArabic: isArabic, colorCode: colorCode));
-      box.put(HiveConstants.hiveList, words);
-    }, "We have problems when we add a word. Please try again.");
-  }
+
 
 
 

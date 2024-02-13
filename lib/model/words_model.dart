@@ -30,27 +30,26 @@ class WordModel {
   }
 
   WordModel addNewExample(String newExample, bool isArabicExample) {
-    List<String> newExamplesWord = _intializeArabicOrEnglish(isArabicExample);
+    List<String> newExamplesWord = _intializeNewExamples(isArabicExample);
     newExamplesWord.add(newExample);
     return _getWordAfterCheckExamples(isArabicExample, newExamplesWord);
   }
 
   WordModel addSimilarWord(String similarWord, bool isArabicSimilarWord) {
-    List<String> newSimilarWords =
-        _intializeArabicOrEnglish(isArabicSimilarWord);
+    List<String> newSimilarWords = _intializeNewSimilarWords(isArabicSimilarWord);
     newSimilarWords.add(similarWord);
-    return _getWordAfterCheckExamples(isArabicSimilarWord, newSimilarWords);
+    return _getWordAfterCheckSimilarWord(isArabicSimilarWord, newSimilarWords);
   }
 
   WordModel deleteSimilarWord(int indexSimilarWord, bool isArabicSimilarWord) {
     List<String> newSimilarWords =
-        _intializeArabicOrEnglish(isArabicSimilarWord);
+    _intializeNewSimilarWords(isArabicSimilarWord);
     newSimilarWords.removeAt(indexSimilarWord);
     return _getWordAfterCheckSimilarWord(isArabicSimilarWord, newSimilarWords);
   }
 
   WordModel deleteExampleWord(int indexExampleWord, bool isArabicExample) {
-    List<String> newExamplesWord = _intializeArabicOrEnglish(isArabicExample);
+    List<String> newExamplesWord = _intializeNewExamples(isArabicExample);
     newExamplesWord.removeAt(indexExampleWord);
     return _getWordAfterCheckExamples(isArabicExample, newExamplesWord);
   }
@@ -79,17 +78,22 @@ class WordModel {
       isArabic: isArabic,
       text: text,
       englishExamples: !isArabicExample ? newExamplesWord : englishExamples,
-      arabicExamples: isArabicExample ? newExamplesWord : arabicSimilarWords,
+      arabicExamples: isArabicExample ? newExamplesWord : arabicExamples,
       arabicSimilarWords: arabicSimilarWords,
       englishSimilarWords: englishSimilarWords,
     );
   }
 
-  List<String> _intializeArabicOrEnglish(bool isArabicSimilarWord) {
+  List<String>_intializeNewExamples(bool isArabicExample){
+    if(isArabicExample){
+      return List.from(arabicExamples);
+    }
+    return List.from(englishExamples);
+  }
+  List<String> _intializeNewSimilarWords(bool isArabicSimilarWord) {
     if (isArabicSimilarWord) {
       return List.from(arabicSimilarWords);
     } else {
       return List.from(englishSimilarWords);
     }
-  }
-}
+  }}
